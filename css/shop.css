@@ -1,0 +1,130 @@
+/* --- 1. CONTENEDOR PRINCIPAL --- */
+.products-container, 
+.featured-products, 
+.gallery-section {
+    max-width: 1400px;
+    margin: 50px auto;
+    padding: 0 20px;
+    width: 100%; /* Asegura que ocupe todo el ancho disponible */
+    box-sizing: border-box;
+}
+
+/* --- 2. LA CUADRÍCULA (GRID) --- */
+.products-grid {
+    /* FORZAR GRID */
+    display: grid !important;
+    
+    /* 4 COLUMNAS IGUALES (Aquí está la clave) */
+    grid-template-columns: repeat(4, 1fr) !important; 
+    
+    /* Espaciado */
+    gap: 30px;
+    margin-top: 30px;
+    
+    /* Limpieza */
+    width: 100%;
+    justify-content: center;
+}
+
+/* --- 3. LA TARJETA (CARD) --- */
+.product-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
+    /* Asegurar que la tarjeta no fuerce el ancho */
+    width: 100%; 
+    min-width: 0; /* Truco vital para CSS Grid */
+    position: relative;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 183, 195, 0.2);
+    border-color: #00B7C3;
+}
+
+/* --- 4. IMAGEN --- */
+.product-card img {
+    width: 100%;
+    height: 200px; /* Altura fija para que todas sean iguales */
+    object-fit: contain;
+    padding: 20px;
+    background: #f9f9f9;
+}
+
+/* --- 5. TEXTO Y PRECIOS --- */
+.product-card h3 {
+    font-size: 1rem;
+    color: #002527;
+    margin: 15px 15px 5px;
+    font-weight: 700;
+    
+    /* Cortar texto si es muy largo */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-card .price {
+    font-size: 1.3rem;
+    color: #00B7C3;
+    font-weight: 800;
+    margin: 0 15px 10px;
+}
+
+.product-card .stock-info {
+    font-size: 0.8rem;
+    margin: 0 15px 15px;
+    font-weight: 600;
+}
+
+/* --- 6. BOTONES --- */
+.card-buttons {
+    padding: 0 15px 20px;
+    margin-top: auto; /* Empuja el botón al final */
+}
+
+.carrito_button {
+    width: 100%;
+    padding: 10px;
+    background: #002527;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.carrito_button:hover {
+    background: #00B7C3;
+}
+
+/* --- 7. RESPONSIVIDAD (Adaptarse a pantallas pequeñas) --- */
+
+/* Pantallas medianas (Laptops pequeñas / Tablets horizontales) */
+@media (max-width: 1200px) {
+    .products-grid {
+        grid-template-columns: repeat(3, 1fr) !important; /* 3 columnas */
+    }
+}
+
+/* Tablets verticales */
+@media (max-width: 900px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr) !important; /* 2 columnas */
+    }
+}
+
+/* Celulares */
+@media (max-width: 600px) {
+    .products-grid {
+        grid-template-columns: 1fr !important; /* 1 columna */
+    }
+}

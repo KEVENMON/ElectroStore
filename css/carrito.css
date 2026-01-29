@@ -1,0 +1,78 @@
+/* Estilos para el modal de confirmación de compra */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+}
+
+/* Contenido del modal */
+.contenedor {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 40px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.contenedor h2 {
+    color: #002527;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+.contenedor p {
+    color: #555;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+/* Botón para cerrar el modal */
+.cerrado {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.2s ease;
+    background: none;
+    border: none;
+}
+
+.cerrado:hover {
+    color: #ff0000;
+    transform: scale(1.2);
+}
+
+/* Botón "Ir a pagar" */
+.checkout-btn {
+    background-color: #00B7C3;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 10px 5px;
+}
+
+.checkout-btn:hover {
+    background-color: #009099;
+    transform: scale(1.05);
+}
+
+.checkout-btn:active {
+    transform: scale(0.98);
+}

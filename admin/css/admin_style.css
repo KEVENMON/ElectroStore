@@ -1,0 +1,148 @@
+/* admin/css/admin_style.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root {
+    --dark-bg: #002527;
+    --dark-lighter: #003a3d;
+    --accent: #00B7C3;
+    --accent-hover: #009099;
+    --white: #ffffff;
+    --grey-light: #f4f7f6;
+    --text-grey: #666;
+    --danger: #dc3545;
+    --warning: #ffc107;
+    --success: #28a745;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    background-color: var(--grey-light);
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- SIDEBAR (Barra Lateral) --- */
+.admin-sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, var(--dark-bg) 0%, #001516 100%);
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    position: fixed;
+    height: 100%;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+    z-index: 100;
+}
+
+.brand-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--accent);
+    letter-spacing: 1px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-links { list-style: none; padding: 0; }
+.nav-links li { margin-bottom: 8px; }
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 15px;
+    color: #a0a0a0;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.nav-link:hover, .nav-link.active {
+    background: rgba(0, 183, 195, 0.15);
+    color: var(--white);
+    border-left: 4px solid var(--accent);
+}
+
+.nav-icon { font-size: 1.2rem; }
+
+/* --- MAIN CONTENT --- */
+.admin-main {
+    flex: 1;
+    margin-left: 260px; /* Ancho del sidebar */
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- TOP HEADER --- */
+.admin-topbar {
+    background: var(--white);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 90;
+}
+
+.page-title { margin: 0; font-size: 1.2rem; color: var(--dark-bg); font-weight: 600; }
+
+.user-wrapper { display: flex; align-items: center; gap: 15px; }
+.admin-avatar {
+    width: 40px; height: 40px;
+    background: var(--dark-bg);
+    color: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold;
+}
+
+/* --- CONTENT AREA --- */
+.content-wrapper { padding: 30px; flex: 1; }
+
+/* --- CARDS --- */
+.dashboard-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-bottom: 30px; }
+.card {
+    background: var(--white);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    border-bottom: 4px solid transparent;
+    transition: transform 0.3s;
+}
+.card:hover { transform: translateY(-5px); }
+.card h3 { font-size: 2rem; margin: 0; color: var(--dark-bg); }
+.card p { margin: 5px 0 0; color: var(--text-grey); font-size: 0.9rem; }
+.card.blue { border-color: #007bff; }
+.card.orange { border-color: var(--warning); }
+.card.green { border-color: var(--success); }
+
+/* --- TABLES --- */
+.table-responsive { background: var(--white); padding: 25px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; padding: 15px; color: var(--text-grey); font-size: 0.85rem; border-bottom: 2px solid #eee; }
+td { padding: 15px; border-bottom: 1px solid #f9f9f9; color: #333; vertical-align: middle; }
+.status-badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+.status-success { background: #d4edda; color: #155724; }
+.status-warning { background: #fff3cd; color: #856404; }
+
+/* --- BOTONES --- */
+.btn-primary { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block;}
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-sm { padding: 5px 10px; font-size: 0.85rem; border-radius: 5px; margin-right: 5px; }
+.btn-edit { background: var(--warning); color: #333; }
+.btn-delete { background: var(--danger); color: white; }
+
+/* --- FOOTER --- */
+.admin-footer {
+    text-align: center; padding: 20px; color: #999; font-size: 0.85rem;
+    border-top: 1px solid #eee; background: var(--white);
+}

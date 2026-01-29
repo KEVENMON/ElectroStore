@@ -1,0 +1,123 @@
+/* css/login.css */
+
+/* Fondo de toda la página de login */
+.body-login {
+    background: linear-gradient(135deg, #002527 0%, #004a50 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Contenedor blanco */
+.login-container-wrapper {
+    background: white;
+    padding: 50px;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+}
+
+.auth-box h2 {
+    margin-bottom: 30px;
+    color: #002527;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+/* Inputs */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.95em;
+    color: #002527;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #00B7C3;
+    box-shadow: 0 0 8px rgba(0, 183, 195, 0.2);
+}
+
+/* Botones */
+.btn-action {
+    width: 100%;
+    padding: 12px;
+    background-color: #00B7C3;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-action:hover {
+    background-color: #009099;
+    transform: scale(1.02);
+}
+
+.btn-action:active {
+    transform: scale(0.98);
+}
+
+/* Textos de cambio */
+.switch-text {
+    margin-top: 25px;
+    font-size: 0.95em;
+    color: #555;
+}
+
+.switch-text span {
+    color: #00B7C3;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.switch-text span:hover {
+    color: #009099;
+    text-decoration: underline;
+}
+
+/* Botón flotante para volver */
+.back-home-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    background: rgba(0, 183, 195, 0.9);
+    padding: 10px 20px;
+    border-radius: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.back-home-btn:hover {
+    background-color: #009099;
+    transform: scale(1.05);
+}
