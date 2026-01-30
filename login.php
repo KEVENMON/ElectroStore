@@ -44,16 +44,19 @@
                     <input type="email" id="regEmail" required placeholder="tucorreo@ejemplo.com">
                 </div>
                 <div class="input-group">
+                    <label>Teléfono</label>
+                    <input type="tel" id="regTelefono" placeholder="099...">
+                </div>
+                <div class="input-group">
                     <label>Contraseña</label>
                     <input type="password" id="regPass" required placeholder="Crea una contraseña">
                 </div>
                 <button type="submit" class="btn-action">Registrarse</button>
             </form>
             <p class="switch-text">
-                ¿Ya tienes cuenta? <span id="btnIrALogin">Inicia Sesión</span>
+                ¿Ya tienes cuenta? <span id="btnIrALogin" style="cursor:pointer; color:#00B7C3; font-weight:bold;">Inicia Sesión</span>
             </p>
         </div>
-    </div>
 
     <script src="js/auth.js"></script>
 </body>

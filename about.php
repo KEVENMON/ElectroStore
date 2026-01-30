@@ -297,26 +297,32 @@
             <div class="team-card">
                 <div class="icon-circle" style="background:#f0f0f0; color:#333; font-size:2rem;">👔</div>
                 <span class="team-role">Gerente General</span>
-                <h3>Carlos Mendoza</h3>
+                <h3>Kevin Anchatuña</h3>
                 <p class="team-desc">Visión y estrategia empresarial.</p>
             </div>
             <div class="team-card">
                 <div class="icon-circle" style="background:#f0f0f0; color:#333; font-size:2rem;">📊</div>
                 <span class="team-role">Operaciones</span>
-                <h3>María González</h3>
+                <h3>Robison Quispe</h3>
                 <p class="team-desc">Eficiencia en tiendas y procesos.</p>
             </div>
             <div class="team-card">
                 <div class="icon-circle" style="background:#f0f0f0; color:#333; font-size:2rem;">💻</div>
                 <span class="team-role">Tecnología</span>
-                <h3>Juan Rodríguez</h3>
+                <h3>Erick Cajas</h3>
                 <p class="team-desc">Plataformas digitales óptimas.</p>
             </div>
             <div class="team-card">
                 <div class="icon-circle" style="background:#f0f0f0; color:#333; font-size:2rem;">📢</div>
                 <span class="team-role">Marketing</span>
-                <h3>Ana López</h3>
+                <h3>Johann Lagla</h3>
                 <p class="team-desc">Estrategias y ofertas.</p>
+            </div>
+            <div class="team-card">
+                <div class="icon-circle" style="background:#f0f0f0; color:#333; font-size:2rem;">🚗</div>
+                <span class="team-role">Agente vendendor</span>
+                <h3>Sebastian Bastidas</h3>
+                <p class="team-desc">Estrategias de ventas y atención al cliente.</p>
             </div>
         </div>
     </section>

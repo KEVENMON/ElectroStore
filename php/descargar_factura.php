@@ -2,114 +2,165 @@
 session_start();
 require 'conexion.php';
 
-// Verificar acceso
-if (!isset($_SESSION['user_id']) || !isset($_GET['pedido'])) {
-    die("Acceso denegado.");
+// 1. Verificar si hay sesión
+if (!isset($_SESSION['user_id'])) {
+    die("Error: Debes iniciar sesión para ver la factura.");
+}
+
+// 2. Verificar que llegue el ID del pedido
+if (!isset($_GET['pedido'])) {
+    die("Error: No se especificó un pedido.");
 }
 
 $id_pedido = $_GET['pedido'];
-$id_usuario = $_SESSION['user_id'];
+$id_usuario_actual = $_SESSION['user_id'];
+$rol_actual = $_SESSION['rol']; // Asegúrate que en el login guardamos esto en sesión
 
-// Consultar Pedido (Asegurando que pertenezca al usuario logueado)
-$stmt = $conn->prepare("SELECT p.*, u.nombre, u.email, u.direccion, u.telefono 
-                        FROM Pedidos p 
-                        JOIN Usuarios u ON p.id_usuario = u.id_usuario 
-                        WHERE p.id_pedido = ? AND p.id_usuario = ?");
-$stmt->execute([$id_pedido, $id_usuario]);
-$pedido = $stmt->fetch(PDO::FETCH_ASSOC);
+try {
+    // --- LÓGICA CLAVE: CONSULTA DIFERENCIADA ---
+    
+    if ($rol_actual === 'admin') {
+        // SI ES ADMIN: Puede ver el pedido SIN importar de quién sea
+        $sql = "SELECT p.*, u.nombre as nombre_cliente, u.email, u.telefono, u.direccion 
+                FROM Pedidos p
+                JOIN Usuarios u ON p.id_usuario = u.id_usuario
+                WHERE p.id_pedido = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$id_pedido]);
+    
+    } else {
+        // SI ES CLIENTE: Solo puede ver SU propio pedido
+        $sql = "SELECT p.*, u.nombre as nombre_cliente, u.email, u.telefono, u.direccion 
+                FROM Pedidos p
+                JOIN Usuarios u ON p.id_usuario = u.id_usuario
+                WHERE p.id_pedido = ? AND p.id_usuario = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$id_pedido, $id_usuario_actual]);
+    }
 
-if (!$pedido) die("Pedido no encontrado.");
+    $pedido = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Consultar Detalles
-$stmtDet = $conn->prepare("SELECT dp.*, pr.nombre 
-                           FROM Detalles_Pedidos dp 
-                           JOIN Productos pr ON dp.id_producto = pr.id_producto 
-                           WHERE dp.id_pedido = ?");
-$stmtDet->execute([$id_pedido]);
-$items = $stmtDet->fetchAll(PDO::FETCH_ASSOC);
+    if (!$pedido) {
+        die("<div style='text-align:center; padding:50px; font-family:sans-serif;'>
+                <h1>⚠️ Pedido no encontrado</h1>
+                <p>Es posible que no tengas permisos para ver esta factura o que el ID sea incorrecto.</p>
+                <a href='../index.php'>Volver al inicio</a>
+             </div>");
+    }
+
+    // 3. Obtener los detalles (productos)
+    $stmtDetalles = $conn->prepare("SELECT d.*, p.nombre 
+                                    FROM Detalles_Pedidos d 
+                                    JOIN Productos p ON d.id_producto = p.id_producto 
+                                    WHERE d.id_pedido = ?");
+    $stmtDetalles->execute([$id_pedido]);
+    $detalles = $stmtDetalles->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    die("Error de base de datos: " . $e->getMessage());
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Factura #<?php echo $id_pedido; ?></title>
+    <title>Factura #<?php echo str_pad($pedido['id_pedido'], 5, "0", STR_PAD_LEFT); ?></title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 40px; color: #333; }
-        .invoice-header { display: flex; justify-content: space-between; border-bottom: 2px solid #002527; padding-bottom: 20px; margin-bottom: 30px; }
-        .invoice-title { font-size: 2rem; color: #002527; font-weight: bold; }
-        .company-info { text-align: right; font-size: 0.9rem; }
-        
-        .client-info { margin-bottom: 40px; }
-        .client-info h3 { border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px; font-size: 1.1rem; }
-        
-        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-        th { background: #f4f4f4; padding: 10px; text-align: left; border-bottom: 2px solid #ddd; }
-        td { padding: 10px; border-bottom: 1px solid #eee; }
-        .total-section { text-align: right; }
-        .total-row { font-size: 1.2rem; font-weight: bold; color: #002527; }
-        
-        .footer { margin-top: 50px; text-align: center; font-size: 0.8rem; color: #777; border-top: 1px solid #eee; padding-top: 20px; }
-        
-        @media print {
-            .no-print { display: none; }
-            body { padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #555; padding: 30px; }
+        .invoice-box {
+            background: #fff; max-width: 800px; margin: auto; padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); font-size: 16px; line-height: 24px; color: #555;
         }
+        .invoice-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .invoice-title { font-size: 45px; line-height: 45px; color: #333; }
+        .invoice-details { text-align: right; }
+        
+        table { width: 100%; line-height: inherit; text-align: left; border-collapse: collapse; }
+        table td { padding: 5px; vertical-align: top; }
+        table tr.heading td { background: #eee; border-bottom: 1px solid #ddd; font-weight: bold; }
+        table tr.item td { border-bottom: 1px solid #eee; }
+        table tr.total td { border-top: 2px solid #eee; font-weight: bold; }
+        
+        .status-badge {
+            display: inline-block; padding: 5px 10px; border-radius: 5px; color: white; font-weight: bold; font-size: 0.8rem;
+            background: <?php echo ($pedido['estado'] == 'Pendiente') ? '#ffc107' : '#28a745'; ?>;
+        }
+        
+        @media print { body { background: white; } .no-print { display: none; } }
     </style>
 </head>
-<body onload="window.print()"> <div class="invoice-header">
-        <div class="invoice-title">FACTURA</div>
-        <div class="company-info">
-            <strong>ElectroStore S.A.</strong><br>
-            Av. Amazonas N45-123<br>
-            Quito, Ecuador<br>
-            RUC: 1790012345001<br>
-            info@electrostore.com
+<body>
+
+    <div class="no-print" style="text-align: center; margin-bottom: 20px;">
+        <button onclick="window.print()" style="padding: 10px 20px; background: #002527; color: white; border: none; cursor: pointer; font-size: 16px;">🖨️ Imprimir Factura</button>
+        <?php if($rol_actual == 'admin'): ?>
+            <a href="../admin/pedidos.php" style="color: white; margin-left: 20px;">Volver al Panel</a>
+        <?php else: ?>
+            <a href="../historial.php" style="color: white; margin-left: 20px;">Volver al Historial</a>
+        <?php endif; ?>
+    </div>
+
+    <div class="invoice-box">
+        <div class="invoice-header">
+            <div>
+                <div class="invoice-title">ElectroStore</div>
+                <div>Av. General Rumiñahui, Sangolquí</div>
+                <div>soporte@electrostore.com</div>
+            </div>
+            <div class="invoice-details">
+                <b>Factura #: <?php echo str_pad($pedido['id_pedido'], 5, "0", STR_PAD_LEFT); ?></b><br>
+                Fecha: <?php echo date("d/m/Y", strtotime($pedido['fecha_pedido'])); ?><br>
+                Estado: <span class="status-badge"><?php echo $pedido['estado']; ?></span>
+            </div>
         </div>
-    </div>
 
-    <div class="client-info">
-        <h3>Datos del Cliente</h3>
-        <p>
-            <strong>Cliente:</strong> <?php echo htmlspecialchars($pedido['nombre']); ?><br>
-            <strong>Dirección:</strong> <?php echo htmlspecialchars($pedido['direccion']); ?><br>
-            <strong>Teléfono:</strong> <?php echo htmlspecialchars($pedido['telefono']); ?><br>
-            <strong>Fecha de Emisión:</strong> <?php echo date('d/m/Y H:i', strtotime($pedido['fecha_pedido'])); ?><br>
-            <strong>Nro. Orden:</strong> #<?php echo str_pad($id_pedido, 6, "0", STR_PAD_LEFT); ?>
-        </p>
-    </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Descripción</th>
-                <th width="10%">Cant.</th>
-                <th width="15%">P. Unit</th>
-                <th width="15%" style="text-align:right;">Total</th>
+        <table cellpadding="0" cellspacing="0">
+            <tr class="heading">
+                <td>Facturar a:</td>
+                <td></td>
             </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($items as $item): ?>
-            <tr>
+            <tr class="details">
+                <td colspan="2">
+                    <?php echo htmlspecialchars($pedido['nombre_cliente']); ?><br>
+                    <?php echo htmlspecialchars($pedido['email']); ?><br>
+                    <?php echo !empty($pedido['telefono']) ? htmlspecialchars($pedido['telefono']) : 'Sin teléfono'; ?><br>
+                    <?php echo !empty($pedido['direccion']) ? htmlspecialchars($pedido['direccion']) : 'Dirección no registrada'; ?>
+                </td>
+            </tr>
+        </table>
+
+        <br>
+
+        <table>
+            <tr class="heading">
+                <td>Producto</td>
+                <td style="text-align: center;">Cant.</td>
+                <td style="text-align: right;">Precio Unit.</td>
+                <td style="text-align: right;">Total</td>
+            </tr>
+
+            <?php foreach($detalles as $item): ?>
+            <tr class="item">
                 <td><?php echo htmlspecialchars($item['nombre']); ?></td>
-                <td><?php echo $item['cantidad']; ?></td>
-                <td>$<?php echo number_format($item['precio_unitario'], 2); ?></td>
-                <td style="text-align:right;">$<?php echo number_format($item['subtotal'], 2); ?></td>
+                <td style="text-align: center;"><?php echo $item['cantidad']; ?></td>
+                <td style="text-align: right;">$<?php echo number_format($item['precio_unitario'], 2); ?></td>
+                <td style="text-align: right;">$<?php echo number_format($item['subtotal'], 2); ?></td>
             </tr>
             <?php endforeach; ?>
-        </tbody>
-    </table>
 
-    <div class="total-section">
-        <p>Subtotal: $<?php echo number_format($pedido['total'] / 1.10 - 5, 2); ?></p>
-        <p>IVA (10%): $<?php echo number_format(($pedido['total'] - 5) - ($pedido['total'] / 1.10 - 5), 2); ?></p>
-        <p>Envío: $5.00</p>
-        <p class="total-row">TOTAL: $<?php echo number_format($pedido['total'], 2); ?></p>
+            <tr class="total">
+                <td colspan="3" style="text-align: right;">TOTAL A PAGAR:</td>
+                <td style="text-align: right; color: #00B7C3; font-size: 1.2rem;">
+                    $<?php echo number_format($pedido['total'], 2); ?>
+                </td>
+            </tr>
+        </table>
+        
+        <br><br>
+        <div style="text-align: center; color: #888; font-size: 0.85rem;">
+            Gracias por su compra. Esta es una factura generada electrónicamente.
+        </div>
     </div>
-
-    <div class="footer">
-        Gracias por su compra en ElectroStore. <br>
-        Esta es una factura generada electrónicamente válida para fines tributarios.
-    </div>
-
 </body>
 </html>
